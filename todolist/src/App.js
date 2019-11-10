@@ -6,6 +6,10 @@ import React from 'react';
 // const Component = react.Component
 
 function App() {
+    // JSX 语法：在js中使用<标签>不需要引号
+    // 如果要使用自己创造的组件 可以写成标签<APP />
+    // react组件标签 大写字母开头
+    // h5标签 小写字母开头
   return (
     <div>
         TodoList
