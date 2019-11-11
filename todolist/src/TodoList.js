@@ -1,4 +1,6 @@
 import React, {Component, Fragment} from 'react';
+import TodoItem from './TodoItem';
+import './style.css';
 
 // import {Component} from 'react';
 // 等价于
@@ -12,50 +14,70 @@ class TodoList extends Component{
         this.state = {
             inputValue: '',
             list: []
-        }
+        };
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleButtonClick = this.handleButtonClick.bind(this);
+        this.handleItemDelete = this.handleItemDelete.bind(this);
     }
     render(){
         return (
             <Fragment>
+                {
+                    // JSX注释要放到中括号里
+                }
                 <div>
+                    <label htmlFor={'insertArea'}>
+                        input your task
+                    </label>
                     <input
+                        id = 'insertArea'
+                        className={'input'}
                         value={this.state.inputValue}
-                        onChange={this.handleInputChange.bind(this)}
+                        onChange={this.handleInputChange}
                     />
-                    <button onClick={this.handleButtonClick.bind(this)}>add</button>
+                    <button
+                        onClick={this.handleButtonClick}>
+                        add
+                    </button>
                 </div>
                 <ul>
-                    {
-                        this.state.list.map((item, index) =>{
-                            return(
-                            <li
-                                key = {index}
-                                onClick={this.handleItemDelete.bind(this, index)}>
-                                {item}</li>)
-                        })
-                    }
+                    {this.getTodoItem()}
                 </ul>
             </Fragment>
         )
     }
 
-    handleInputChange(e){
-        this.setState({
-            inputValue: e.target.value
+    getTodoItem(){
+        return this.state.list.map((item, index) =>{
+            return(
+                <TodoItem
+                    key = {index}
+                    content = {item}
+                    index = {index}
+                    deleteItem = {this.handleItemDelete}
+                />
+            )
         })
     }
 
-    handleButtonClick(e){
-        this.setState({
-            list: [...this.state.list, this.state.inputValue],
+    handleInputChange(e){
+        const value = e.target.value;
+        this.setState(() => ({
+            inputValue: value
+        }))
+    }
+
+    handleButtonClick(){
+        this.setState((prevState) => ({
+            list: [...prevState.list, prevState.inputValue],
             inputValue:''
-        })
+        }))
     }
     handleItemDelete(index){
-        const list = [...this.state.list];
-        list.splice(index,1);
-        this.setState({
-            list: list
+        this.setState((prevState) => {
+            const list = [...prevState.list];
+            list.splice(index,1);
+            return {list}
         })
     }
 }
