@@ -1,110 +1,159 @@
-import React, {Component, Fragment} from 'react';
-import TodoItem from './TodoItem';
-import Test from './Test';
+import React, {Component} from 'react';
+import 'antd/dist/antd.css';
+import store from './store';
+import {getAddItemAction, getDeleteItemAction, getInputChangeAction} from './store/actionCreators'
+import  './style.css';
+import TodoListUI from './TodoListUI';
 import axios from 'axios';
-import './style.css';
 
+export default class TodoList extends Component {
+    constructor(props) {
+        super(props);
+        this.state = store.getState();
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleStoreChange = this.handleStoreChange.bind(this);
+        this.handleButtonClick = this.handleButtonClick.bind(this);
+        this.handleItemDelete = this.handleItemDelete.bind(this);
+        store.subscribe(this.handleStoreChange);
+    }
+
+    render() {
+        return (
+          <TodoListUI
+              inputValue={this.state.inputValue}
+              list={this.state.list}
+              handleInputChange={this.handleInputChange}
+              handleButtonClick={this.handleButtonClick}
+              handleItemDelete={this.handleItemDelete}
+          />
+        )
+    }
+
+    componentDidMount() {
+        axios.get();
+    }
+
+    handleInputChange(e) {
+        const action = getInputChangeAction(e.target.value);
+        store.dispatch(action)
+    }
+
+    handleStoreChange() {
+        this.setState(store.getState());
+    }
+
+    handleButtonClick() {
+        const action = getAddItemAction();
+        store.dispatch(action)
+    }
+
+    handleItemDelete(index) {
+        const action = getDeleteItemAction(index);
+        store.dispatch(action)
+
+    }
+}
+//========== without UI framework ================
 // import {Component} from 'react';
 // 等价于
 // import React from 'react';
 // const Component = react.Component
 
-
-class TodoList extends Component{
-    constructor(props){
-        super(props);
-        //react定义数据要在state中定义
-        this.state = {
-            inputValue: '',
-            list: []
-        };
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleButtonClick = this.handleButtonClick.bind(this);
-        this.handleItemDelete = this.handleItemDelete.bind(this);
-    }
-    render(){
-        return (
-            <Fragment>
-                {/*JSX注释要放到中括号里*/}
-                <div>
-                    <label htmlFor={'insertArea'}>
-                        input your task
-                    </label>
-                    <input
-                        id = 'insertArea'
-                        className={'input'}
-                        value={this.state.inputValue}
-                        onChange={this.handleInputChange}
-                        ref={(input) => {this.input = input}}
-                    />
-                    <button
-                        onClick={this.handleButtonClick}>
-                        add
-                    </button>
-                </div>
-                <ul>
-                    {this.getTodoItem()}
-                </ul>
-
-                 <Test content = {this.state.inputValue} />
-
-            </Fragment>
-        )
-    }
-
-    componentDidMount(){
-        axios.get('https://api.themoviedb.org/3/discover/movie?api_key=0f5f3bc7298ae176fd0f642ec0a647b4&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1')
-            .then((response) => {
-                var results = response.data.results;
-                results = this.mapMovies(results);
-                this.setState(() => ({
-                    list: results
-                }));
-            })
-            .catch (() => {alert('error')});
-    }
-
-    mapMovies(list){
-        return list.map((item) =>{
-            return(item.title)
-        })
-    }
-
-    getTodoItem(){
-        return this.state.list.map((item, index) =>{
-            return(
-                <TodoItem
-                    key = {item}
-                    content = {item}
-                    index = {index}
-                    deleteItem = {this.handleItemDelete}
-                />
-            )
-        })
-    }
-
-    handleInputChange(){
-        const value = this.input.value;
-        this.setState(() => ({
-            inputValue: value
-        }))
-    }
-
-    handleButtonClick(){
-        this.setState((prevState) => ({
-            list: [...prevState.list, prevState.inputValue],
-            inputValue:''
-        }))
-    }
-
-    handleItemDelete(index){
-        this.setState((prevState) => {
-            const list = [...prevState.list]; //copy the original to new list
-            list.splice(index,1);
-            return {list}
-        })
-    }
-}
+// class TodoList extends Component{
+//     constructor(props){
+//         super(props);
+//         //react定义数据要在state中定义
+//         this.state = {
+//             inputValue: '',
+//             list: []
+//         };
+//         this.handleInputChange = this.handleInputChange.bind(this);
+//         this.handleButtonClick = this.handleButtonClick.bind(this);
+//         this.handleItemDelete = this.handleItemDelete.bind(this);
+//     }
+//     render(){
+//         return (
+//             <Fragment>
+//                 {/*JSX注释要放到中括号里*/}
+//                 <div>
+//                     <label htmlFor={'insertArea'}>
+//                         input your task
+//                     </label>
+//                     <input
+//                         id = 'insertArea'
+//                         className={'input'}
+//                         value={this.state.inputValue}
+//                         onChange={this.handleInputChange}
+//                         ref={(input) => {this.input = input}}
+//                     />
+//                     <button
+//                         onClick={this.handleButtonClick}>
+//                         add
+//                     </button>
+//                 </div>
+//                 <ul>
+//                     {this.getTodoItem()}
+//                 </ul>
+//
+//                  <Test content = {this.state.inputValue} />
+//
+//             </Fragment>
+//         )
+//     }
+//
+//     componentDidMount(){
+//         axios.get('https://api.themoviedb.org/3/discover/movie?api_key=0f5f3bc7298ae176fd0f642ec0a647b4&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1')
+//             .then((response) => {
+//                 var results = response.data.results;
+//                 results = this.mapMovies(results);
+//                 this.setState(() => ({
+//                     list: results
+//                 }));
+//             })
+//             .catch (() => {alert('error')});
+//     }
+//
+//     mapMovies(list){
+//         return list.map((item) =>{
+//             return(item.title)
+//         })
+//     }
+//
+//     getTodoItem(){
+//         return this.state.list.map((item, index) =>{
+//             return(
+//                 <TodoItem
+//                     key = {item}
+//                     content = {item}
+//                     index = {index}
+//                     deleteItem = {this.handleItemDelete}
+//                 />
+//             )
+//         })
+//     }
+//
+//     handleInputChange(){
+//         const value = this.input.value;
+//         this.setState(() => ({
+//             inputValue: value
+//         }))
+//     }
+//
+//     handleButtonClick(){
+//         this.setState((prevState) => ({
+//             list: [...prevState.list, prevState.inputValue],
+//             inputValue:''
+//         }))
+//     }
+//
+//     handleItemDelete(index){
+//         this.setState((prevState) => {
+//             const list = [...prevState.list]; //copy the original to new list
+//             list.splice(index,1);
+//             return {list}
+//         })
+//     }
+// }
 
 /*
 function TodoList() {
@@ -136,4 +185,4 @@ class TodoList extends React.Component{
 }
 */
 
-export default TodoList;
+

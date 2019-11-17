@@ -38,5 +38,3 @@ TodoItem.propTypes = {
 TodoItem.defaultProps = {
     test: ' '
 };
-
-export default TodoItem;
