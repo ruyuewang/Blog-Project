@@ -11,6 +11,7 @@ import './style.css';
 class TodoList extends Component{
     constructor(props){
         super(props);
+        //react定义数据要在state中定义
         this.state = {
             inputValue: '',
             list: []
@@ -22,9 +23,7 @@ class TodoList extends Component{
     render(){
         return (
             <Fragment>
-                {
-                    // JSX注释要放到中括号里
-                }
+                {/*JSX注释要放到中括号里*/}
                 <div>
                     <label htmlFor={'insertArea'}>
                         input your task
@@ -73,9 +72,10 @@ class TodoList extends Component{
             inputValue:''
         }))
     }
+
     handleItemDelete(index){
         this.setState((prevState) => {
-            const list = [...prevState.list];
+            const list = [...prevState.list]; //copy the original to new list
             list.splice(index,1);
             return {list}
         })
@@ -111,4 +111,5 @@ class TodoList extends React.Component{
     }
 }
 */
+
 export default TodoList;

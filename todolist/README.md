@@ -1,3 +1,7 @@
+# Blog Project 
+## Authors: Yufei and Ruyue 
+## Starting Date: 11/10/2019
+
 This project was bootstrapped with [Create React TodoList](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
