@@ -1,5 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import TodoItem from './TodoItem';
+import Test from './Test';
+import axios from 'axios';
 import './style.css';
 
 // import {Component} from 'react';
@@ -33,6 +35,7 @@ class TodoList extends Component{
                         className={'input'}
                         value={this.state.inputValue}
                         onChange={this.handleInputChange}
+                        ref={(input) => {this.input = input}}
                     />
                     <button
                         onClick={this.handleButtonClick}>
@@ -42,15 +45,36 @@ class TodoList extends Component{
                 <ul>
                     {this.getTodoItem()}
                 </ul>
+
+                 <Test content = {this.state.inputValue} />
+
             </Fragment>
         )
+    }
+
+    componentDidMount(){
+        axios.get('https://api.themoviedb.org/3/discover/movie?api_key=0f5f3bc7298ae176fd0f642ec0a647b4&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1')
+            .then((response) => {
+                var results = response.data.results;
+                results = this.mapMovies(results);
+                this.setState(() => ({
+                    list: results
+                }));
+            })
+            .catch (() => {alert('error')});
+    }
+
+    mapMovies(list){
+        return list.map((item) =>{
+            return(item.title)
+        })
     }
 
     getTodoItem(){
         return this.state.list.map((item, index) =>{
             return(
                 <TodoItem
-                    key = {index}
+                    key = {item}
                     content = {item}
                     index = {index}
                     deleteItem = {this.handleItemDelete}
@@ -59,8 +83,8 @@ class TodoList extends Component{
         })
     }
 
-    handleInputChange(e){
-        const value = e.target.value;
+    handleInputChange(){
+        const value = this.input.value;
         this.setState(() => ({
             inputValue: value
         }))

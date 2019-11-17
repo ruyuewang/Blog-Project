@@ -7,13 +7,17 @@ export default class TodoItem extends Component{
         this.handleClick = this.handleClick.bind(this);
     }
 
+    shouldComponentUpdate(nextProps, nextState){
+        return nextProps.content !== this.props.content;
+    }
+
     render(){
-        const {content} = this.props;
+        const {content, test} = this.props;
         return(
             <div
                 onClick={this.handleClick}
             >
-                {content}
+                {test} - {content}
             </div>
         )
     }
@@ -24,15 +28,15 @@ export default class TodoItem extends Component{
     }
 }
 
-//check the types
-//use isRequired
 TodoItem.propTypes = {
-    content: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    test: PropTypes.string.isRequired,
+    content: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     deleteItem: PropTypes.func,
     index: PropTypes.number
 };
 
-//use to set default values
 TodoItem.defaultProps = {
-
+    test: ' '
 };
+
+export default TodoItem;
