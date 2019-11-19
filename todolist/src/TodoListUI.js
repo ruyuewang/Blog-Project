@@ -1,7 +1,6 @@
-import React, {Component} from 'react';
+import React from 'react';
 import 'antd/dist/antd.css';
 import {Button, Input, List} from "antd";
-
 
 const TodoListUI = (props) => {
     return(
